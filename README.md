@@ -1,0 +1,1 @@
+This collection showcases a variety of Python scripts, mini-projects, and utilities developed and authored by Teruyuki Ito. The repository is designed to demonstrate practical applications of Python across data analysis, automation, data visualization, and more.
