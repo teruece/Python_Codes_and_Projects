@@ -1,0 +1,61 @@
+# tesla_forecast_interactive.py
+
+import pandas as pd
+from prophet import Prophet
+
+# Optional: for static fallback plot if you want
+import matplotlib.pyplot as plt
+
+# --- Step 1: Load your Excel file ---
+file_path = r'C:\Users\Teruyuki\OneDrive - TAWAL.COM.SA\Desktop\IECEP Webinar\tesla stock price.xlsx'
+data = pd.read_excel(file_path)
+
+print("Data preview:")
+print(data.head())
+
+# --- Step 2: Prepare columns for Prophet ---
+# Prophet requires 'ds' for date and 'y' for the target variable
+data = data.rename(columns={'Date': 'ds', 'Stock_Price': 'y'})
+
+# Convert 'ds' to datetime (handles M/DD/YYYY format)
+data['ds'] = pd.to_datetime(data['ds'], format='%m/%d/%Y', errors='coerce')
+
+# Drop any invalid rows
+data = data.dropna(subset=['ds', 'y'])
+
+# --- Step 3: Build and fit the Prophet model ---
+model = Prophet()
+model.fit(data)
+
+# --- Step 4: Forecast 60 days into the future (you can change this) ---
+future = model.make_future_dataframe(periods=60)
+forecast = model.predict(future)
+
+# --- Step 5: Display forecast summary ---
+print("\nForecast tail:")
+print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail())
+
+# --- Step 6: Create interactive Plotly forecast chart ---
+from prophet.plot import plot_plotly
+import plotly.io as pio
+
+# Use browser renderer so you can zoom & pan
+pio.renderers.default = "browser"
+
+fig = plot_plotly(model, forecast)
+fig.update_layout(
+    title="🚀 Tesla Stock Price Forecast (Interactive)",
+    xaxis_title="Date",
+    yaxis_title="Stock Price (USD)",
+    template="plotly_dark",
+    hovermode="x unified"
+)
+
+# Show interactive chart (zoomable)
+fig.show()
+
+# --- Step 7: Optional — show trend and seasonality components ---
+from prophet.plot import plot_components_plotly
+fig_components = plot_components_plotly(model, forecast)
+fig_components.update_layout(template="plotly_white")
+fig_components.show()
