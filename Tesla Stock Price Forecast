@@ -7,7 +7,7 @@ from prophet import Prophet
 import matplotlib.pyplot as plt
 
 # --- Step 1: Load your Excel file ---
-file_path = r'C:\Users\Teruyuki\OneDrive - TAWAL.COM.SA\Desktop\IECEP Webinar\tesla stock price.xlsx'
+file_path = r'C:\Users\Teruyuki\tesla stock price.xlsx'
 data = pd.read_excel(file_path)
 
 print("Data preview:")
